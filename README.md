@@ -1,7 +1,6 @@
 # boltx-sentry
 
-[Sentry](https://sentry.io/) is an error monitoring service that we think has a great Django integration.
-It allows you to debug production errors and also has some performance monitoring features that can be enabled.
+Use [Sentry](https://sentry.io/) to monitor errors and performance in your Bolt application.
 
 ![image](https://user-images.githubusercontent.com/649496/213781768-182322e6-edf0-4d98-8b37-ab564ef23c3b.png)
 
@@ -9,13 +8,15 @@ It allows you to debug production errors and also has some performance monitorin
 
 ```python
 # settings.py
-INSTALLED_PACKAGES = INSTALLED_PACKAGES + [
+INSTALLED_PACKAGES = [
+  # ...
   "boltx.sentry",
 ]
 
-# Enable the error page feedback widget
-MIDDLEWARE = MIDDLEWARE + [
-  "boltx.sentry.SentryFeedbackMiddleware",
+MIDDLEWARE = [
+  # Put SentryMiddleware as early as possible in the middleware stack
+  "boltx.sentry.SentryMiddleware",
+  # ...
 ]
 ```
 
@@ -23,7 +24,6 @@ In your `base.html`, load `sentry` and include the `sentry_js` tag:
 
 ```html
 <!-- base.html -->
-{% load sentry %}
 <!doctype html>
 <html lang="en">
   <head>
@@ -36,7 +36,8 @@ In your `base.html`, load `sentry` and include the `sentry_js` tag:
 </html>
 ```
 
-To enable Sentry in production, add the `SENTRY_DSN` to your Heroku app:
+To enable Sentry in production, add the `SENTRY_DSN` to your environment.
+In Heroku, for example:
 
 ```sh
 heroku config:set SENTRY_DSN=<your-DSN>
@@ -44,25 +45,24 @@ heroku config:set SENTRY_DSN=<your-DSN>
 
 ## Configuration
 
-By default, you'll get both Python (backend) and JavaScript (frontend) error reporting that includes PII (user ID, username, and email).
-You can further tweak the Sentry settings with these environment variables:
-
-- `SENTRY_RELEASE` - the commit sha by default
-- `SENTRY_ENVIRONMENT` - "production" by default
-- `SENTRY_PII_ENABLED` - `true` by default, set to `false` to disable sending PII
-- `SENTRY_JS_ENABLED` - `true` by default, set to `false` to disable JS error reporting
-
-| Name | Default | Environment | Description |
-| ---- | ------- | ----------- | ----------- |
-| `SENTRY_DSN` | | Any | [Sentry DSN](https://docs.sentry.io/product/sentry-basics/dsn-explainer/) |
-| `SENTRY_RELEASE` | `HEROKU_SLUG_COMMIT` | Any | [Sentry release tag](https://docs.sentry.io/product/releases/) |
-| `SENTRY_ENVIRONMENT` | production | Any | [Sentry environment tag](https://docs.sentry.io/product/sentry-basics/environments/) |
-| `SENTRY_PII_ENABLED` | true | Any | Send username/email with Sentry errors |
-| `SENTRY_JS_ENABLED` | true | Any | Enables JS error monitoring (requiers `{% sentry_js %}` tag too) |
+[Look at the `default_settings.py` for all available settings.](./boltx/sentry/default_settings.py)
 
 ## Error page feedback widget
 
-By adding the `SentryFeedbackMiddleware` to your `MIDDLEWARE`,
-your `500.html` server error page will include the Sentry feedback widget:
+In your `500.html`, you can optionally use the `sentry_feedback` tag to show Sentry's feedback widget:
+
+```html
+<!-- base.html -->
+<!doctype html>
+<html lang="en">
+  <head>
+      ...
+      {% sentry_feedback %}
+  </head>
+  <body>
+      ...
+  </body>
+</html>
+```
 
 ![image](https://user-images.githubusercontent.com/649496/213781811-418500fa-b7f8-43f1-8d28-4fde1bfe2b4b.png)

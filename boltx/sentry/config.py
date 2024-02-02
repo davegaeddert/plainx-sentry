@@ -1,5 +1,4 @@
 import sentry_sdk
-
 from bolt.packages import PackageConfig
 from bolt.runtime import settings
 

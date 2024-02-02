@@ -1,8 +1,7 @@
 import sentry_sdk
-from sentry_sdk.utils import capture_internal_exceptions
-from sentry_sdk.tracing import TRANSACTION_SOURCE_TASK
-
 from bolt.runtime import settings
+from sentry_sdk.tracing import TRANSACTION_SOURCE_TASK
+from sentry_sdk.utils import capture_internal_exceptions
 
 try:
     from bolt.db import connection

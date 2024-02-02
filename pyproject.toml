@@ -15,6 +15,7 @@ sentry-sdk = "^1.8.0"
 [tool.poetry.dev-dependencies]
 bolt = {git = "https://github.com/dropseed/bolt", branch = "main"}
 bolt-pytest = {git = "https://github.com/dropseed/bolt", subdirectory = "bolt-pytest", branch = "main"}
+bolt-code = {git = "https://github.com/dropseed/bolt", subdirectory = "bolt-code", branch = "main"}
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

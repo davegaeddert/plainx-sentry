@@ -1,5 +1,4 @@
 import sentry_sdk
-
 from bolt.runtime import settings
 from bolt.templates.jinja.extensions import InclusionTagExtension
 

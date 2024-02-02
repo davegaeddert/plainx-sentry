@@ -1,4 +1,6 @@
 import sentry_sdk
+from sentry_sdk.utils import capture_internal_exceptions
+from sentry_sdk.tracing import TRANSACTION_SOURCE_TASK
 
 from bolt.runtime import settings
 
@@ -14,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 def trace_db(execute, sql, params, many, context):
     with sentry_sdk.start_span(op="db", description=sql) as span:
-        # Mostly borred from the Sentry Django integration...
+        # Mostly borrowed from the Sentry Django integration...
         data = {
             "db.params": params,
             "db.executemany": many,
@@ -113,3 +115,42 @@ class SentryMiddleware:
                 )
             else:
                 sentry_sdk.set_user({"id": str(user.pk)})
+
+
+class SentryWorkerMiddleware:
+    def __init__(self, run_job):
+        self.run_job = run_job
+
+    def __call__(self, job):
+        def event_processor(event, hint):
+            with capture_internal_exceptions():
+                # Attach it directly to any events
+                extra = event.setdefault("extra", {})
+                extra["bolt.worker"] = {"job": job.as_json()}
+            return event
+
+        with sentry_sdk.configure_scope() as scope:
+            # Reset the scope (and breadcrumbs) for each job
+            scope.clear()
+            scope.add_event_processor(event_processor)
+
+        with sentry_sdk.start_transaction(
+            op="bolt.worker.job",
+            name=f"job:{job.job_class}",
+            source=TRANSACTION_SOURCE_TASK,
+        ) as transaction:
+            if connection:
+                # Also get spans for db queries
+                with connection.execute_wrapper(trace_db):
+                    job_result = self.run_job(job)
+            else:
+                # No db presumably
+                job_result = self.run_job(job)
+
+            with capture_internal_exceptions():
+                # Don't need to filter on this, but do want the context to view
+                transaction.set_context("job", job.as_json())
+
+            transaction.set_status("ok")
+
+        return job_result

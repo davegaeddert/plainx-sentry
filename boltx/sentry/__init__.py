@@ -1,3 +1,3 @@
-from .middleware import SentryMiddleware
+from .middleware import SentryMiddleware, SentryWorkerMiddleware
 
-__all__ = ["SentryMiddleware"]
+__all__ = ["SentryMiddleware", "SentryWorkerMiddleware"]

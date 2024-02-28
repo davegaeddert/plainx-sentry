@@ -4,7 +4,6 @@ from bolt.runtime import settings
 
 
 class BoltxSentryConfig(PackageConfig):
-    default_auto_field = "bolt.db.models.BigAutoField"
     name = "boltx.sentry"
     label = "boltxsentry"
 

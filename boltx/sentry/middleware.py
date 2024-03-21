@@ -55,6 +55,15 @@ class SentryMiddleware:
                 request_info["data"] = request.body.decode("utf-8")
             except Exception:
                 pass
+
+            if user := getattr(request, "user", None):
+                event["user"] = {"id": str(user.pk)}
+                if settings.SENTRY_PII_ENABLED:
+                    if email := getattr(user, "email", None):
+                        event["user"]["email"] = email
+                    if username := getattr(user, "username", None):
+                        event["user"]["username"] = username
+
             return event
 
         with sentry_sdk.configure_scope() as scope:
@@ -95,25 +104,7 @@ class SentryMiddleware:
 
             transaction.set_http_status(response.status_code)
 
-            # Set these after the request is handled,
-            # so we can include it at the top of MIDDLEWARE
-            # but also get the final context (user, request.unique_id, etc.)
-            self.set_user_context(request)
-
         return response
-
-    def set_user_context(self, request):
-        if user := getattr(request, "user", None):
-            if settings.SENTRY_PII_ENABLED:
-                sentry_sdk.set_user(
-                    {
-                        "id": str(user.pk),
-                        "email": user.email,
-                        "username": user.get_username(),
-                    }
-                )
-            else:
-                sentry_sdk.set_user({"id": str(user.pk)})
 
 
 class SentryWorkerMiddleware:

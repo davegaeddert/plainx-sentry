@@ -29,16 +29,17 @@ class SentryJSExtension(InclusionTagExtension):
             # Get user directly if no request (like in server error context)
             user = context.get("user", None)
 
-        if settings.SENTRY_PII_ENABLED and user:
-            sentry_context["sentry_init"]["initialScope"] = {
-                "user": {
-                    "id": user.id,
-                    "email": user.email,
-                    "username": user.get_username(),
-                }
-            }
-        elif user:
+        if user:
             sentry_context["sentry_init"]["initialScope"] = {"user": {"id": user.id}}
+            if settings.SENTRY_PII_ENABLED:
+                if email := getattr(user, "email", None):
+                    sentry_context["sentry_init"]["initialScope"]["user"][
+                        "email"
+                    ] = email
+                if username := getattr(user, "username", None):
+                    sentry_context["sentry_init"]["initialScope"]["user"][
+                        "username"
+                    ] = username
 
         return sentry_context
 

@@ -10,6 +10,6 @@ class ErrorView(TemplateView):
 
 
 urlpatterns = [
-    path("error/", ErrorView.as_view()),
+    path("error/", ErrorView),
     path("", TemplateView.as_view(template_name="index.html"), name="index"),
 ]

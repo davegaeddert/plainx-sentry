@@ -7,24 +7,24 @@ SECRET_KEY = "secret"
 DEBUG = True
 
 INSTALLED_PACKAGES = [
-    "bolt.auth",
-    "bolt.sessions",
-    "boltx.sentry",
+    "plain.auth",
+    "plain.sessions",
+    "plainx.sentry",
 ]
 
 MIDDLEWARE = [
-    "bolt.middleware.security.SecurityMiddleware",
-    "bolt.sessions.middleware.SessionMiddleware",
-    "bolt.middleware.common.CommonMiddleware",
-    "bolt.csrf.middleware.CsrfViewMiddleware",
-    "bolt.auth.middleware.AuthenticationMiddleware",
-    "bolt.middleware.clickjacking.XFrameOptionsMiddleware",
-    "boltx.sentry.middleware.SentryFeedbackMiddleware",
+    "plain.middleware.security.SecurityMiddleware",
+    "plain.sessions.middleware.SessionMiddleware",
+    "plain.middleware.common.CommonMiddleware",
+    "plain.csrf.middleware.CsrfViewMiddleware",
+    "plain.auth.middleware.AuthenticationMiddleware",
+    "plain.middleware.clickjacking.XFrameOptionsMiddleware",
+    "plainx.sentry.middleware.SentryFeedbackMiddleware",
 ]
 
 DATABASES = {
     "default": {
-        "ENGINE": "bolt.db.backends.sqlite3",
+        "ENGINE": "plain.db.backends.sqlite3",
         "NAME": BASE_DIR / "db.sqlite3",
     }
 }

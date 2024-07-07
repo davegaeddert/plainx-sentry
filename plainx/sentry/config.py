@@ -1,11 +1,11 @@
 import sentry_sdk
-from bolt.packages import PackageConfig
-from bolt.runtime import settings
+from plain.packages import PackageConfig
+from plain.runtime import settings
 
 
-class BoltxSentryConfig(PackageConfig):
-    name = "boltx.sentry"
-    label = "boltxsentry"
+class PlainxSentryConfig(PackageConfig):
+    name = "plainx.sentry"
+    label = "plainxsentry"
 
     def ready(self):
         if settings.SENTRY_DSN and settings.SENTRY_AUTO_INIT:

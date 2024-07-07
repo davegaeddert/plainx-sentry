@@ -1,5 +1,5 @@
-from bolt.urls import path
-from bolt.views import TemplateView
+from plain.urls import path
+from plain.views import TemplateView
 
 
 class ErrorView(TemplateView):

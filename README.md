@@ -1,6 +1,6 @@
-# boltx-sentry
+# plainx-sentry
 
-Use [Sentry](https://sentry.io/) to monitor errors and performance in your Bolt application.
+Use [Sentry](https://sentry.io/) to monitor errors and performance in your Plain application.
 
 ![image](https://user-images.githubusercontent.com/649496/213781768-182322e6-edf0-4d98-8b37-ab564ef23c3b.png)
 
@@ -10,12 +10,12 @@ Use [Sentry](https://sentry.io/) to monitor errors and performance in your Bolt 
 # settings.py
 INSTALLED_PACKAGES = [
   # ...
-  "boltx.sentry",
+  "plainx.sentry",
 ]
 
 MIDDLEWARE = [
   # Put SentryMiddleware as early as possible in the middleware stack
-  "boltx.sentry.SentryMiddleware",
+  "plainx.sentry.SentryMiddleware",
   # ...
 ]
 ```
@@ -45,7 +45,7 @@ heroku config:set SENTRY_DSN=<your-DSN>
 
 ## Configuration
 
-[Look at the `default_settings.py` for all available settings.](./boltx/sentry/default_settings.py)
+[Look at the `default_settings.py` for all available settings.](./plainx/sentry/default_settings.py)
 
 ## Error page feedback widget
 

@@ -1,10 +1,10 @@
 import sentry_sdk
-from bolt.runtime import settings
+from plain.runtime import settings
 from sentry_sdk.tracing import TRANSACTION_SOURCE_TASK
 from sentry_sdk.utils import capture_internal_exceptions
 
 try:
-    from bolt.db import connection
+    from plain.models.db import connection
 except ImportError:
     connection = None
 
@@ -116,7 +116,7 @@ class SentryWorkerMiddleware:
             with capture_internal_exceptions():
                 # Attach it directly to any events
                 extra = event.setdefault("extra", {})
-                extra["bolt.worker"] = {"job": job.as_json()}
+                extra["plain.worker"] = {"job": job.as_json()}
             return event
 
         with sentry_sdk.configure_scope() as scope:
@@ -125,7 +125,7 @@ class SentryWorkerMiddleware:
             scope.add_event_processor(event_processor)
 
         with sentry_sdk.start_transaction(
-            op="bolt.worker.job",
+            op="plain.worker.job",
             name=f"job:{job.job_class}",
             source=TRANSACTION_SOURCE_TASK,
         ) as transaction:

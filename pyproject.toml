@@ -6,7 +6,7 @@ packages = [
 
 version = "0.1.0"
 description = ""
-authors = ["Dave Gaeddert <dave.gaeddert@dropseed.dev>"]
+authors = ["Dave Gaeddert <dave.gaeddert@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.11"

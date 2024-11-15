@@ -1,2 +1,2 @@
 #!/bin/sh -e
-pytest tests
+uv run pytest tests

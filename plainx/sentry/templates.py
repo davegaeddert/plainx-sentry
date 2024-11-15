@@ -1,8 +1,10 @@
 import sentry_sdk
 from plain.runtime import settings
+from plain.templates import register_template_extension
 from plain.templates.jinja.extensions import InclusionTagExtension
 
 
+@register_template_extension
 class SentryJSExtension(InclusionTagExtension):
     tags = {"sentry_js"}
     template_name = "sentry/js.html"
@@ -44,6 +46,7 @@ class SentryJSExtension(InclusionTagExtension):
         return sentry_context
 
 
+@register_template_extension
 class SentryFeedbackExtension(SentryJSExtension):
     tags = {"sentry_feedback"}
 
@@ -51,9 +54,3 @@ class SentryFeedbackExtension(SentryJSExtension):
         context = super().get_context(context, *args, **kwargs)
         context["sentry_dialog_event_id"] = sentry_sdk.last_event_id()
         return context
-
-
-extensions = [
-    SentryJSExtension,
-    SentryFeedbackExtension,
-]

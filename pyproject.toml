@@ -1,22 +1,27 @@
-[tool.poetry]
+[project]
 name = "plainx-sentry"
-packages = [
-    { include = "plainx" },
+version = "0.2.0"
+description = ""
+readme = "README.md"
+authors = [
+    { name = "Dave Gaeddert", email = "dave.gaeddert@gmail.com" }
+]
+requires-python = ">=3.11"
+dependencies = [
+    "sentry-sdk>=1.8.0",
 ]
 
-version = "0.1.0"
-description = ""
-authors = ["Dave Gaeddert <dave.gaeddert@gmail.com>"]
+[dependency-groups]
+dev = [
+    "plain<1.0.0",
+    "plain-code<1.0.0",
+    "plain-pytest<1.0.0",
+]
 
-[tool.poetry.dependencies]
-python = "^3.11"
-sentry-sdk = "^1.8.0"
 
-[tool.poetry.dev-dependencies]
-plainframework = "<1.0.0"
-"plain.pytest" = "<1.0.0"
-"plain.code" = "<1.0.0"
+[tool.hatch.build.targets.wheel]
+packages = ["plainx"]
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"

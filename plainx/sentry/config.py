@@ -1,10 +1,10 @@
 import sentry_sdk
-from plain.packages import PackageConfig
+from plain.packages import PackageConfig, register_config
 from plain.runtime import settings
 
 
+@register_config
 class PlainxSentryConfig(PackageConfig):
-    name = "plainx.sentry"
     label = "plainxsentry"
 
     def ready(self):

@@ -66,10 +66,9 @@ class SentryMiddleware:
 
             return event
 
-        with sentry_sdk.configure_scope() as scope:
-            # Reset the scope (and breadcrumbs) for each request
-            scope.clear()
-            scope.add_event_processor(event_processor)
+        # Reset the scope (and breadcrumbs) for each request
+        scope = sentry_sdk.get_isolation_scope()
+        scope.add_event_processor(event_processor)
 
         # Sentry's Django integration patches the WSGIHandler.
         # We could make our own WSGIHandler and patch it or call it directly from gunicorn,
@@ -119,10 +118,9 @@ class SentryWorkerMiddleware:
                 extra["plain.worker"] = {"job": job.as_json()}
             return event
 
-        with sentry_sdk.configure_scope() as scope:
-            # Reset the scope (and breadcrumbs) for each job
-            scope.clear()
-            scope.add_event_processor(event_processor)
+        # Reset the scope (and breadcrumbs) for each job
+        scope = sentry_sdk.get_isolation_scope()
+        scope.add_event_processor(event_processor)
 
         with sentry_sdk.start_transaction(
             op="plain.worker.job",

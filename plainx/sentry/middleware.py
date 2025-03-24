@@ -1,6 +1,6 @@
 import sentry_sdk
 from plain.runtime import settings
-from sentry_sdk.tracing import TRANSACTION_SOURCE_TASK
+from sentry_sdk.tracing import TransactionSource
 from sentry_sdk.utils import capture_internal_exceptions
 
 try:
@@ -125,7 +125,7 @@ class SentryWorkerMiddleware:
         with sentry_sdk.start_transaction(
             op="plain.worker.job",
             name=f"job:{job.job_class}",
-            source=TRANSACTION_SOURCE_TASK,
+            source=TransactionSource.TASK,
         ) as transaction:
             if connection:
                 # Also get spans for db queries

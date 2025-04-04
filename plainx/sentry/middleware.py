@@ -41,6 +41,10 @@ class SentryMiddleware:
         self.get_response = get_response
 
     def __call__(self, request):
+        # Don't do anything if Sentry is not active
+        if not sentry_sdk.get_client().is_active():
+            return self.get_response(request)
+
         def event_processor(event, hint):
             # request gets attached directly to an event,
             # not necessarily in the "context"
@@ -66,44 +70,45 @@ class SentryMiddleware:
 
             return event
 
-        # Reset the scope (and breadcrumbs) for each request
-        scope = sentry_sdk.get_isolation_scope()
-        scope.add_event_processor(event_processor)
+        with sentry_sdk.isolation_scope() as scope:
+            # Reset the scope (and breadcrumbs) for each request
+            scope.clear()
+            scope.add_event_processor(event_processor)
 
-        # Sentry's Django integration patches the WSGIHandler.
-        # We could make our own WSGIHandler and patch it or call it directly from gunicorn,
-        # but putting our middleware at the top of MIDDLEWARE is pretty close and easier.
-        with sentry_sdk.start_transaction(
-            op="http.server", name=request.path_info
-        ) as transaction:
-            if connection:
-                # Also get spans for db queries
-                with connection.execute_wrapper(trace_db):
+            # Sentry's Django integration patches the WSGIHandler.
+            # We could make our own WSGIHandler and patch it or call it directly from gunicorn,
+            # but putting our middleware at the top of MIDDLEWARE is pretty close and easier.
+            with sentry_sdk.start_transaction(
+                op="http.server", name=request.path_info
+            ) as transaction:
+                if connection:
+                    # Also get spans for db queries
+                    with connection.execute_wrapper(trace_db):
+                        response = self.get_response(request)
+                else:
+                    # No db presumably
                     response = self.get_response(request)
-            else:
-                # No db presumably
-                response = self.get_response(request)
 
-            if resolver_match := getattr(request, "resolver_match", None):
-                # Rename the transaction using a pattern,
-                # and attach other url/views tags we can use to filter
-                transaction.name = f"route:{resolver_match.route}"
-                transaction.set_tag("url_namespace", resolver_match.namespace)
-                transaction.set_tag("url_name", resolver_match.url_name)
-                transaction.set_tag("view_name", resolver_match.view_name)
-                transaction.set_tag("view_class", resolver_match._func_path)
-                # Don't need to filter on this, but do want the context to view
-                transaction.set_context(
-                    "url_params",
-                    {
-                        "args": resolver_match.args,
-                        "kwargs": resolver_match.kwargs,
-                    },
-                )
+                if resolver_match := getattr(request, "resolver_match", None):
+                    # Rename the transaction using a pattern,
+                    # and attach other url/views tags we can use to filter
+                    transaction.name = f"route:{resolver_match.route}"
+                    transaction.set_tag("url_namespace", resolver_match.namespace)
+                    transaction.set_tag("url_name", resolver_match.url_name)
+                    transaction.set_tag("view_name", resolver_match.view_name)
+                    transaction.set_tag("view_class", resolver_match._func_path)
+                    # Don't need to filter on this, but do want the context to view
+                    transaction.set_context(
+                        "url_params",
+                        {
+                            "args": resolver_match.args,
+                            "kwargs": resolver_match.kwargs,
+                        },
+                    )
 
-            transaction.set_http_status(response.status_code)
+                transaction.set_http_status(response.status_code)
 
-        return response
+            return response
 
 
 class SentryWorkerMiddleware:
@@ -111,6 +116,10 @@ class SentryWorkerMiddleware:
         self.run_job = run_job
 
     def __call__(self, job):
+        # Don't do anything if Sentry is not active
+        if not sentry_sdk.get_client().is_active():
+            return self.run_job(job)
+
         def event_processor(event, hint):
             with capture_internal_exceptions():
                 # Attach it directly to any events
@@ -118,27 +127,28 @@ class SentryWorkerMiddleware:
                 extra["plain.worker"] = {"job": job.as_json()}
             return event
 
-        # Reset the scope (and breadcrumbs) for each job
-        scope = sentry_sdk.get_isolation_scope()
-        scope.add_event_processor(event_processor)
+        with sentry_sdk.isolation_scope() as scope:
+            # Reset the scope (and breadcrumbs) for each request
+            scope.clear()
+            scope.add_event_processor(event_processor)
 
-        with sentry_sdk.start_transaction(
-            op="plain.worker.job",
-            name=f"job:{job.job_class}",
-            source=TransactionSource.TASK,
-        ) as transaction:
-            if connection:
-                # Also get spans for db queries
-                with connection.execute_wrapper(trace_db):
+            with sentry_sdk.start_transaction(
+                op="plain.worker.job",
+                name=f"job:{job.job_class}",
+                source=TransactionSource.TASK,
+            ) as transaction:
+                if connection:
+                    # Also get spans for db queries
+                    with connection.execute_wrapper(trace_db):
+                        job_result = self.run_job(job)
+                else:
+                    # No db presumably
                     job_result = self.run_job(job)
-            else:
-                # No db presumably
-                job_result = self.run_job(job)
 
-            with capture_internal_exceptions():
-                # Don't need to filter on this, but do want the context to view
-                transaction.set_context("job", job.as_json())
+                with capture_internal_exceptions():
+                    # Don't need to filter on this, but do want the context to view
+                    transaction.set_context("job", job.as_json())
 
-            transaction.set_status("ok")
+                transaction.set_status("ok")
 
-        return job_result
+            return job_result

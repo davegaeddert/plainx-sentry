@@ -95,7 +95,8 @@ class SentryMiddleware:
                     transaction.name = f"route:{resolver_match.route}"
                     transaction.set_tag("url_namespace", resolver_match.namespace)
                     transaction.set_tag("url_name", resolver_match.url_name)
-                    transaction.set_tag("view_class", resolver_match.view.view_class)
+                    transaction.set_tag("view_class", resolver_match.view.view_class.__qualname__)
+
                     # Don't need to filter on this, but do want the context to view
                     transaction.set_context(
                         "url_params",

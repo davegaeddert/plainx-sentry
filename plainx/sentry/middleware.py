@@ -51,7 +51,7 @@ class SentryMiddleware:
             request_info = event.setdefault("request", {})
             request_info["url"] = request.build_absolute_uri()
             request_info["method"] = request.method
-            request_info["query_string"] = request.META.get("QUERY_STRING", "")
+            request_info["query_string"] = request.meta.get("QUERY_STRING", "")
             # Headers and env need some PII filtering, ideally,
             # among other filters... similar for GET/POST data?
             # request_info["headers"] = dict(request.headers)

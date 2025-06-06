@@ -4,9 +4,9 @@ from sentry_sdk.tracing import TransactionSource
 from sentry_sdk.utils import capture_internal_exceptions
 
 try:
-    from plain.models.db import connection
+    from plain.models.db import connections, DEFAULT_DB_ALIAS
 except ImportError:
-    connection = None
+    connections = None
 
 import logging
 
@@ -19,11 +19,11 @@ def trace_db(execute, sql, params, many, context):
         data = {
             "db.params": params,
             "db.executemany": many,
-            "db.system": connection.vendor,
-            "db.name": connection.settings_dict.get("NAME"),
-            "db.user": connection.settings_dict.get("USER"),
-            "server.address": connection.settings_dict.get("HOST"),
-            "server.port": connection.settings_dict.get("PORT"),
+            "db.system": connections[DEFAULT_DB_ALIAS].vendor,
+            "db.name": connections[DEFAULT_DB_ALIAS].settings_dict.get("NAME"),
+            "db.user": connections[DEFAULT_DB_ALIAS].settings_dict.get("USER"),
+            "server.address": connections[DEFAULT_DB_ALIAS].settings_dict.get("HOST"),
+            "server.port": connections[DEFAULT_DB_ALIAS].settings_dict.get("PORT"),
         }
 
         sentry_sdk.add_breadcrumb(message=sql, category="query", data=data)
@@ -81,9 +81,9 @@ class SentryMiddleware:
             with sentry_sdk.start_transaction(
                 op="http.server", name=request.path_info
             ) as transaction:
-                if connection:
+                if connections:
                     # Also get spans for db queries
-                    with connection.execute_wrapper(trace_db):
+                    with connections[DEFAULT_DB_ALIAS].execute_wrapper(trace_db):
                         response = self.get_response(request)
                 else:
                     # No db presumably
@@ -137,9 +137,9 @@ class SentryWorkerMiddleware:
                 name=f"job:{job.job_class}",
                 source=TransactionSource.TASK,
             ) as transaction:
-                if connection:
+                if connections:
                     # Also get spans for db queries
-                    with connection.execute_wrapper(trace_db):
+                    with connections[DEFAULT_DB_ALIAS].execute_wrapper(trace_db):
                         job_result = self.run_job(job)
                 else:
                     # No db presumably

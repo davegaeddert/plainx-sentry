@@ -35,9 +35,9 @@ class SentryJSExtension(InclusionTagExtension):
             sentry_context["sentry_init"]["initialScope"] = {"user": {"id": user.id}}
             if settings.SENTRY_PII_ENABLED:
                 if email := getattr(user, "email", None):
-                    sentry_context["sentry_init"]["initialScope"]["user"][
-                        "email"
-                    ] = email
+                    sentry_context["sentry_init"]["initialScope"]["user"]["email"] = (
+                        email
+                    )
                 if username := getattr(user, "username", None):
                     sentry_context["sentry_init"]["initialScope"]["user"][
                         "username"

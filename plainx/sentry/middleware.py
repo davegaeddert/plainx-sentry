@@ -4,9 +4,9 @@ from sentry_sdk.tracing import TransactionSource
 from sentry_sdk.utils import capture_internal_exceptions
 
 try:
-    from plain.models.db import connections, DEFAULT_DB_ALIAS
+    from plain.models.db import db_connection
 except ImportError:
-    connections = None
+    db_connection = None
 
 import logging
 
@@ -19,11 +19,11 @@ def trace_db(execute, sql, params, many, context):
         data = {
             "db.params": params,
             "db.executemany": many,
-            "db.system": connections[DEFAULT_DB_ALIAS].vendor,
-            "db.name": connections[DEFAULT_DB_ALIAS].settings_dict.get("NAME"),
-            "db.user": connections[DEFAULT_DB_ALIAS].settings_dict.get("USER"),
-            "server.address": connections[DEFAULT_DB_ALIAS].settings_dict.get("HOST"),
-            "server.port": connections[DEFAULT_DB_ALIAS].settings_dict.get("PORT"),
+            "db.system": db_connection.vendor,
+            "db.name": db_connection.settings_dict.get("NAME"),
+            "db.user": db_connection.settings_dict.get("USER"),
+            "server.address": db_connection.settings_dict.get("HOST"),
+            "server.port": db_connection.settings_dict.get("PORT"),
         }
 
         sentry_sdk.add_breadcrumb(message=sql, category="query", data=data)
@@ -81,9 +81,9 @@ class SentryMiddleware:
             with sentry_sdk.start_transaction(
                 op="http.server", name=request.path_info
             ) as transaction:
-                if connections:
+                if db_connection:
                     # Also get spans for db queries
-                    with connections[DEFAULT_DB_ALIAS].execute_wrapper(trace_db):
+                    with db_connection.execute_wrapper(trace_db):
                         response = self.get_response(request)
                 else:
                     # No db presumably
@@ -95,7 +95,9 @@ class SentryMiddleware:
                     transaction.name = f"route:{resolver_match.route}"
                     transaction.set_tag("url_namespace", resolver_match.namespace)
                     transaction.set_tag("url_name", resolver_match.url_name)
-                    transaction.set_tag("view_class", resolver_match.view.view_class.__qualname__)
+                    transaction.set_tag(
+                        "view_class", resolver_match.view.view_class.__qualname__
+                    )
 
                     # Don't need to filter on this, but do want the context to view
                     transaction.set_context(
@@ -137,9 +139,9 @@ class SentryWorkerMiddleware:
                 name=f"job:{job.job_class}",
                 source=TransactionSource.TASK,
             ) as transaction:
-                if connections:
+                if db_connection:
                     # Also get spans for db queries
-                    with connections[DEFAULT_DB_ALIAS].execute_wrapper(trace_db):
+                    with db_connection.execute_wrapper(trace_db):
                         job_result = self.run_job(job)
                 else:
                     # No db presumably

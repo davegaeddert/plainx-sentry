@@ -8,7 +8,7 @@ authors = [
 ]
 requires-python = ">=3.11"
 dependencies = [
-    "sentry-sdk>=2.24.0",
+    "sentry-sdk[opentelemetry]>=2.24.0",
 ]
 
 [dependency-groups]
@@ -22,6 +22,9 @@ dev = [
 [tool.hatch.build.targets.wheel]
 packages = ["plainx"]
 
+
+[tool.plain.code.biome]
+version = "2.1.2"
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"

@@ -12,12 +12,6 @@ INSTALLED_PACKAGES = [
   # ...
   "plainx.sentry",
 ]
-
-MIDDLEWARE = [
-  # Put SentryMiddleware as early as possible in the middleware stack
-  "plainx.sentry.SentryMiddleware",
-  # ...
-]
 ```
 
 In your `base.html`, load `sentry` and include the `sentry_js` tag:

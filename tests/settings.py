@@ -17,7 +17,6 @@ MIDDLEWARE = [
     "plain.sessions.middleware.SessionMiddleware",
     "plain.middleware.common.CommonMiddleware",
     "plain.csrf.middleware.CsrfViewMiddleware",
-    "plain.auth.middleware.AuthenticationMiddleware",
     "plain.middleware.clickjacking.XFrameOptionsMiddleware",
     "plainx.sentry.middleware.SentryFeedbackMiddleware",
 ]

@@ -1,4 +1,5 @@
 import sentry_sdk
+from plain.auth import get_request_user
 from plain.runtime import settings
 from plain.templates import register_template_extension
 from plain.templates.jinja.extensions import InclusionTagExtension
@@ -25,8 +26,8 @@ class SentryJSExtension(InclusionTagExtension):
         }
 
         if "request" in context:
-            # Use request.user by default (avoids accidental "user" variable confusion)
-            user = getattr(context["request"], "user", None)
+            # Get the authenticated user from the request
+            user = get_request_user(context["request"])
         else:
             # Get user directly if no request (like in server error context)
             user = context.get("user", None)

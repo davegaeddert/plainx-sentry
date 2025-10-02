@@ -1,5 +1,6 @@
 import sentry_sdk
 from plain.auth import get_user_model
+from plain.auth.requests import set_request_user
 from plain.views import TemplateView
 
 from plainx.sentry.templatetags.sentry import sentry_js
@@ -39,7 +40,7 @@ def test_sentry_pii_enabled(settings, rf):
     settings.SENTRY_PII_ENABLED = True
 
     request = rf.get("/")
-    request.user = get_user_model()(id=1, email="test@example.com", username="test")
+    set_request_user(request, get_user_model()(id=1, email="test@example.com", username="test"))
 
     assert sentry_js({"request": request}) == {
         "sentry_js_enabled": True,
@@ -83,7 +84,7 @@ def test_sentry_pii_disabled(settings, rf):
     settings.SENTRY_PII_ENABLED = False
 
     request = rf.get("/")
-    request.user = get_user_model()(id=1, email="test@example.com", username="test")
+    set_request_user(request, get_user_model()(id=1, email="test@example.com", username="test"))
 
     assert sentry_js({"request": request}) == {
         "sentry_js_enabled": True,
@@ -104,7 +105,7 @@ def test_sentry_release_env(settings, rf):
     settings.SENTRY_ENVIRONMENT = "production"
 
     request = rf.get("/")
-    request.user = get_user_model()(id=1, email="test@example.com", username="test")
+    set_request_user(request, get_user_model()(id=1, email="test@example.com", username="test"))
 
     assert sentry_js({"request": request}) == {
         "sentry_js_enabled": True,

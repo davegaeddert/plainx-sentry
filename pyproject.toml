@@ -8,6 +8,8 @@ authors = [
 ]
 requires-python = ">=3.11"
 dependencies = [
+    "plain-auth>=0.16.0",
+    "plain-sessions>=0.27.0",
     "sentry-sdk[opentelemetry]>=2.24.0",
 ]
 

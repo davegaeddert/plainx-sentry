@@ -1,6 +1,7 @@
 import sentry_sdk
 from plain.auth import get_request_user
 from plain.runtime import settings
+from plain.sessions import SessionNotAvailable
 from plain.templates import register_template_extension
 from plain.templates.jinja.extensions import InclusionTagExtension
 
@@ -27,7 +28,12 @@ class SentryJSExtension(InclusionTagExtension):
 
         if "request" in context:
             # Get the authenticated user from the request
-            user = get_request_user(context["request"])
+            # Session may not be available if we're rendering an error template
+            # before SessionMiddleware has run (e.g., CSRF failures)
+            try:
+                user = get_request_user(context["request"])
+            except SessionNotAvailable:
+                user = None
         else:
             # Get user directly if no request (like in server error context)
             user = context.get("user", None)

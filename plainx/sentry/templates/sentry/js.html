@@ -1,7 +1,7 @@
 {% if sentry_public_key|default("") -%}
 <script src="https://js.sentry-cdn.com/{{ sentry_public_key }}.min.js" crossorigin="anonymous"></script>
-{{ sentry_init|json_script("sentry_init") }}
-<script>
+{{ sentry_init|json_script("sentry_init", csp_nonce) }}
+<script nonce="{{ csp_nonce }}">
 var sentryInit = JSON.parse(document.getElementById("sentry_init").textContent);
 Sentry.onLoad(function() {
     Sentry.init(sentryInit);

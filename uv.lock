@@ -443,7 +443,7 @@ wheels = [
 
 [[package]]
 name = "plainx-sentry"
-version = "0.10.1"
+version = "0.11.0"
 source = { editable = "." }
 dependencies = [
     { name = "plain-auth" },

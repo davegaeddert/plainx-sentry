@@ -37,6 +37,27 @@ In Heroku, for example:
 heroku config:set SENTRY_DSN=<your-DSN>
 ```
 
+## User and request context
+
+To attach user and request context to errors, add the middleware:
+
+```python
+# settings.py
+MIDDLEWARE = [
+    ...
+    "plain.sessions.middleware.SessionMiddleware",
+    "plainx.sentry.middleware.SentryMiddleware",  # After SessionMiddleware
+    ...
+]
+```
+
+This attaches to errors:
+
+- **User context**: ID, email, username
+- **Request context**: URL, method, query string, headers, cookies
+
+Email, username, headers, and cookies require `SENTRY_PII_ENABLED=True` (the default).
+
 ## Configuration
 
 [Look at the `default_settings.py` for all available settings.](./plainx/sentry/default_settings.py)

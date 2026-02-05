@@ -1,4 +1,7 @@
+from typing import Any
+
 import sentry_sdk
+from jinja2.runtime import Context
 from plain.auth import get_request_user
 from plain.runtime import settings
 from plain.templates import register_template_extension
@@ -10,7 +13,9 @@ class SentryJSExtension(InclusionTagExtension):
     tags = {"sentry_js"}
     template_name = "sentry/js.html"
 
-    def get_context(self, context, *args, **kwargs):
+    def get_context(
+        self, context: Context, *args: Any, **kwargs: Any
+    ) -> Context | dict[str, Any]:
         if not settings.SENTRY_DSN:
             return {}
 
@@ -45,7 +50,10 @@ class SentryJSExtension(InclusionTagExtension):
 class SentryFeedbackExtension(SentryJSExtension):
     tags = {"sentry_feedback"}
 
-    def get_context(self, context, *args, **kwargs):
-        context = super().get_context(context, *args, **kwargs)
-        context["sentry_dialog_event_id"] = sentry_sdk.last_event_id()
-        return context
+    def get_context(
+        self, context: Context, *args: Any, **kwargs: Any
+    ) -> dict[str, Any]:
+        parent_result = super().get_context(context, *args, **kwargs)
+        result: dict[str, Any] = dict(parent_result)
+        result["sentry_dialog_event_id"] = sentry_sdk.last_event_id()
+        return result

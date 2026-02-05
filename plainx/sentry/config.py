@@ -11,7 +11,7 @@ from sentry_sdk.integrations.opentelemetry import SentryPropagator, SentrySpanPr
 class PlainxSentryConfig(PackageConfig):
     label = "plainxsentry"
 
-    def ready(self):
+    def ready(self) -> None:
         if settings.SENTRY_DSN and settings.SENTRY_AUTO_INIT:
             sentry_sdk.init(
                 settings.SENTRY_DSN,

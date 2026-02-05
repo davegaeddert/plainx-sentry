@@ -6,7 +6,7 @@ readme = "README.md"
 authors = [
     { name = "Dave Gaeddert", email = "dave.gaeddert@gmail.com" }
 ]
-requires-python = ">=3.11"
+requires-python = ">=3.13"
 dependencies = [
     "plain-auth>=0.16.0",
     "plain-sessions>=0.27.0",
@@ -26,7 +26,7 @@ packages = ["plainx"]
 
 
 [tool.plain.code.biome]
-version = "2.1.2"
+enabled = false
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"

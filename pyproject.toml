@@ -18,6 +18,7 @@ dev = [
     "plain<1.0.0",
     "plain-code<1.0.0",
     "plain-pytest<1.0.0",
+    "plainx-dev>=0.1.0",
 ]
 
 

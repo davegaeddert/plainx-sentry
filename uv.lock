@@ -357,7 +357,7 @@ wheels = [
 
 [[package]]
 name = "plain"
-version = "0.104.1"
+version = "0.105.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "click" },
@@ -366,9 +366,9 @@ dependencies = [
     { name = "opentelemetry-semantic-conventions" },
     { name = "watchfiles" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/c2/a7/81c0c2b3e8f594387279d0cd9bf9016c2c040133721ab04b32b2e62783bc/plain-0.104.1.tar.gz", hash = "sha256:be108998a98ee1c959b3ef918adb6ffcb93f466561269304e6d04a3d586c3e4d", size = 266883, upload-time = "2026-02-05T02:38:27.46Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/f3/0b/924fb2e5405c2f37fceb070e28167f759f820ed4228c8e4e9fb7cbbd7f2e/plain-0.105.0.tar.gz", hash = "sha256:b7b3131da9e86e9c2bfa1c888a7753c58aa1ff4b6f5d15c1e6135f9621e84bc5", size = 267119, upload-time = "2026-02-05T20:36:14.337Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/36/41/4aa89bb0b0eb47c31ef2fdc3785f2259292e099049050dfa9ffadd07fbec/plain-0.104.1-py3-none-any.whl", hash = "sha256:1d143534bde8174540e401ea27b43ee861304d81f5168bcfafdb39e3bc162d3d", size = 336665, upload-time = "2026-02-05T02:38:25.758Z" },
+    { url = "https://files.pythonhosted.org/packages/df/44/ea4cc8222dc37cf470c58621da5a963ab974f6253ac4ff0d9e35b15a9b44/plain-0.105.0-py3-none-any.whl", hash = "sha256:2a1c6bcc33690666e8df97848927892a3821dc1a180910529459d30ded7fc9f4", size = 336908, upload-time = "2026-02-05T20:36:15.369Z" },
 ]
 
 [[package]]
@@ -442,6 +442,15 @@ wheels = [
 ]
 
 [[package]]
+name = "plainx-dev"
+version = "0.1.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/2c/0a/9ba7732289fc1dd954c5c197bc7df5fb21d5bef26214ba1f542b6f6bd316/plainx_dev-0.1.0.tar.gz", hash = "sha256:7544927e74a6a000156f1da43471c7e89a073257af3fcbd1ca7f381f7c41ca99", size = 5627, upload-time = "2026-02-05T17:51:14.802Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/c2/85/d1b270b5899d93f5e9072bc5fd03b14788b2d183671013d0ac5497605359/plainx_dev-0.1.0-py3-none-any.whl", hash = "sha256:8963b9874c163829a6c14b7220cf338f43fbe9d715850e420ae566e3db79caa7", size = 7249, upload-time = "2026-02-05T17:51:14.067Z" },
+]
+
+[[package]]
 name = "plainx-sentry"
 version = "0.11.0"
 source = { editable = "." }
@@ -456,6 +465,7 @@ dev = [
     { name = "plain" },
     { name = "plain-code" },
     { name = "plain-pytest" },
+    { name = "plainx-dev" },
 ]
 
 [package.metadata]
@@ -470,6 +480,7 @@ dev = [
     { name = "plain", specifier = "<1.0.0" },
     { name = "plain-code", specifier = "<1.0.0" },
     { name = "plain-pytest", specifier = "<1.0.0" },
+    { name = "plainx-dev", specifier = ">=0.1.0" },
 ]
 
 [[package]]

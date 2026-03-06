@@ -1,5 +1,16 @@
 # plainx-sentry changelog
 
+## [0.12.0](https://github.com/davegaeddert/plainx-sentry/releases/v0.12.0) (2026-03-06)
+
+### What's changed
+
+- Updated `SentryMiddleware` to use the new `before_request` middleware API ([3ebad96](https://github.com/davegaeddert/plainx-sentry/commit/3ebad96))
+- Updated Plain dependencies to latest versions ([700140e](https://github.com/davegaeddert/plainx-sentry/commit/700140e))
+
+### Upgrade instructions
+
+- No changes required.
+
 ## [0.11.0](https://github.com/davegaeddert/plainx-sentry/releases/v0.11.0) (2026-02-05)
 
 ### What's changed

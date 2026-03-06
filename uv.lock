@@ -484,7 +484,7 @@ wheels = [
 
 [[package]]
 name = "plainx-sentry"
-version = "0.11.0"
+version = "0.12.0"
 source = { editable = "." }
 dependencies = [
     { name = "plain-auth" },
@@ -504,7 +504,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "plain-auth", specifier = ">=0.16.0" },
-    { name = "plain-sessions", specifier = ">=0.43.0" },
+    { name = "plain-sessions", specifier = "<1.0.0" },
     { name = "sentry-sdk", extras = ["opentelemetry"], specifier = ">=2.24.0" },
 ]
 

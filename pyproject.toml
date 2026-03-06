@@ -1,6 +1,6 @@
 [project]
 name = "plainx-sentry"
-version = "0.11.0"
+version = "0.12.0"
 description = ""
 readme = "README.md"
 authors = [
@@ -9,7 +9,7 @@ authors = [
 requires-python = ">=3.13"
 dependencies = [
     "plain-auth>=0.16.0",
-    "plain-sessions>=0.43.0",
+    "plain-sessions<1.0.0",
     "sentry-sdk[opentelemetry]>=2.24.0",
 ]
 

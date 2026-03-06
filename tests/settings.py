@@ -1,7 +1,3 @@
-from pathlib import Path
-
-BASE_DIR = Path(__file__).parent.absolute()
-
 SECRET_KEY = "secret"
 
 DEBUG = True
@@ -21,12 +17,7 @@ MIDDLEWARE = [
     "plainx.sentry.middleware.SentryFeedbackMiddleware",
 ]
 
-DATABASES = {
-    "default": {
-        "ENGINE": "plain.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
-}
+POSTGRES_DATABASE = "plainx-sentry-test"
 
 ROOT_URLCONF = "urls"
 

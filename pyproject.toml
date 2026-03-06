@@ -9,7 +9,7 @@ authors = [
 requires-python = ">=3.13"
 dependencies = [
     "plain-auth>=0.16.0",
-    "plain-sessions>=0.27.0",
+    "plain-sessions>=0.43.0",
     "sentry-sdk[opentelemetry]>=2.24.0",
 ]
 
@@ -19,6 +19,7 @@ dev = [
     "plain-code<1.0.0",
     "plain-pytest<1.0.0",
     "plainx-dev>=0.1.0",
+    "psycopg[binary]>=3.3.3",
 ]
 
 
@@ -26,7 +27,7 @@ dev = [
 packages = ["plainx"]
 
 
-[tool.plain.code.biome]
+[tool.plain.code.oxc]
 enabled = false
 [build-system]
 requires = ["hatchling"]

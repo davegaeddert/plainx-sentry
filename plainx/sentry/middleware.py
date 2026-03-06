@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import Any
 
 import sentry_sdk
@@ -55,7 +57,7 @@ class SentryMiddleware(HttpMiddleware):
         ]
     """
 
-    def process_request(self, request: Request) -> Response:
+    def before_request(self, request: Request) -> Response | None:
         def event_processor(
             event: dict[str, Any], hint: dict[str, Any]
         ) -> dict[str, Any]:
@@ -70,4 +72,4 @@ class SentryMiddleware(HttpMiddleware):
             return event
 
         sentry_sdk.get_current_scope().add_event_processor(event_processor)
-        return self.get_response(request)
+        return None

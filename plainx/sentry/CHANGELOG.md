@@ -1,5 +1,15 @@
 # plainx-sentry changelog
 
+## [0.13.0](https://github.com/davegaeddert/plainx-sentry/releases/v0.13.0) (2026-04-01)
+
+### What's changed
+
+- OpenTelemetry is now only imported and configured when `SENTRY_TRACES_SAMPLE_RATE > 0`, allowing Sentry error reporting to work without OpenTelemetry packages installed ([4a5300a](https://github.com/davegaeddert/plainx-sentry/commit/4a5300a))
+
+### Upgrade instructions
+
+- No changes required.
+
 ## [0.12.0](https://github.com/davegaeddert/plainx-sentry/releases/v0.12.0) (2026-03-06)
 
 ### What's changed
